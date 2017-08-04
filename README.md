@@ -10,11 +10,7 @@ In this case, it's a little surprising: You'll get a segfault, rather than UB or
 ## introspect.c
 This file attempts to empirically answer the question of what stack structure looks like. Is there metadata mapping names to locations on the stack or are these resolved at compile time? This turns out to be a lot harder to verify.
 
-Another interesting question that could be solved if this was expanded would be if threads could look at other threads stack space. Since these would be valid memory locations, I'm not sure if I'll be able to read them. I know that there's a pointer that tells the currently running routine where to return to, so there is _some_ metadata, just not sure how much or its structure.
-
-Currently full of comments and ideas. I've got a hold of where main is. Now I need to figure out where it is on the stack.
-
-Best thing I can do is get the function pointer, get some element currently on the stack (and thus after main) and search forward (backward?) for the function pointer. 
+Compile introspect and run it with an integer argument to see stack addresses. The first stack address is the location of the 'main' pointer reference, and all the rest are locations of subroutine calls named 'subr'. See the file for more details, although admittedly there's a lot of stray comments in there as of now.
 
 ## mutate.c
 
