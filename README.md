@@ -18,7 +18,7 @@ Best thing I can do is get the function pointer, get some element currently on t
 
 ## mutate.c
 
-If there is a function that takes a struct alloc'd on the heap (or otherwise in the stack of the calling function), there is no need to return anything beyond success/failure. In Python, if something fails an exception is raised, a notable distinction between it and C: C doesn't have exceptions. 
+If there is a function that takes a struct alloc'd on the heap (or otherwise in the stack of the calling function), there is no need to return anything beyond success/failure. In Python, if something fails an exception is raised, a notable distinction between it and C: C doesn't have exceptions. The reason I mention this is that one convenient use for functions like these are return values that signify if the mutation succeeded.
 
 ## noice.c
 Schedulers nowadays do not modify nice values. Nice values determine priorities in the scheduler. This does not mean that their priorities also remain static (and thus their execution allotments), but as far as I can tell they are.
@@ -30,7 +30,7 @@ Who's on null? The world may never know.
 
 
 ## segfault.c
-Decrement a pointer, printing it out until the OS sends us sigsegv. Can we handle that?
+Decrement a pointer, printing it out until the OS sends us sigsegv. This is a bad thing™ 
 
 ## simple.c
 Does no IO or has any header files, simply here to illustrate base elements of an obj file for disassembly.

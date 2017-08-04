@@ -18,23 +18,28 @@ I could allocate something on the stack and point references to it. This means t
 void subr(long fake_ptr, int curr_depth, int depth) {          
   
   /* initialize some junk on the stack */
-  long x = 0;                   
+  long x = (long) &subr;                   
   long *x_ptr_up = &x;          
   long *x_ptr_down = &x;        
+  /* hmm maybe a better thing to put on the stack is the function pointer itself as these are demarc'd. */
   
   /* move down the stack until a reference to it is found */
   while (*x_ptr_up != fake_ptr) {
+    /* I could attempt to use longs here but that would mean I'd have to make sure
+     that all instances of calls had function signature modulo 32 bits */
+    /* x_ptr_up = x_ptr_up - sizeof(int); */
     ++x_ptr_up;
   }
   while (*x_ptr_down != fake_ptr) {
+    /* x_ptr_down = x_ptr_down - sizeof(int); */
     --x_ptr_down;
   }
   /* Excepting the initial call, they're always 16*4 bits apart!  */
-  printf("Stack: up from depth:      %d, %p\n", curr_depth, x_ptr_up);
+  printf("Stack: up from depth:      %d,\t%p\n", curr_depth, x_ptr_up);
   if (curr_depth < depth) {
     subr(x, curr_depth + 1, depth);
   }
-  printf("Stack: down from main:     %d, %p\n", curr_depth, x_ptr_down);
+  printf("Stack: down from main:     %d,\t%p\n", curr_depth, x_ptr_down);
 }
 
 /* Wait.. can I get a pointer to where main is in address space? */
@@ -61,7 +66,5 @@ int main(int argc, char **argv) {
   subr((long) recurse, 0, depth);
   return 0;
 }
-
-/* Hm... stack frames. Are there dedicated registers for keeping track of stack? */
 
 
