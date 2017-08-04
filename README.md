@@ -12,6 +12,10 @@ This file attempts to empirically answer the question of what stack structure lo
 
 Another interesting question that could be solved if this was expanded would be if threads could look at other threads stack space. Since these would be valid memory locations, I'm not sure if I'll be able to read them. I know that there's a pointer that tells the currently running routine where to return to, so there is _some_ metadata, just not sure how much or its structure.
 
+Currently full of comments and ideas. I've got a hold of where main is. Now I need to figure out where it is on the stack.
+
+Best thing I can do is get the function pointer, get some element currently on the stack (and thus after main) and search forward (backward?) for the function pointer. 
+
 ## mutate.c
 
 If there is a function that takes a struct alloc'd on the heap (or otherwise in the stack of the calling function), there is no need to return anything beyond success/failure. In Python, if something fails an exception is raised, a notable distinction between it and C: C doesn't have exceptions. 
@@ -27,3 +31,6 @@ Who's on null? The world may never know.
 
 ## segfault.c
 Decrement a pointer, printing it out until the OS sends us sigsegv. Can we handle that?
+
+## simple.c
+Does no IO or has any header files, simply here to illustrate base elements of an obj file for disassembly.
