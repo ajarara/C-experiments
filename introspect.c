@@ -15,11 +15,12 @@ I could allocate something on the stack and point references to it. This means t
 
 /* allocate an int on the stack, then iterate backwards until you find the function pointer. Once you have that, print out its location in memory. */
 
-void subr(long fake_ptr, int depth) {
+void subr(long fake_ptr, int curr_depth, int depth) {          
+  
   /* initialize some junk on the stack */
-  long x = 0;
-  long *x_ptr_up = &x;
-  long *x_ptr_down = &x;
+  long x = 0;                   
+  long *x_ptr_up = &x;          
+  long *x_ptr_down = &x;        
   
   /* move down the stack until a reference to it is found */
   while (*x_ptr_up != fake_ptr) {
@@ -28,13 +29,12 @@ void subr(long fake_ptr, int depth) {
   while (*x_ptr_down != fake_ptr) {
     --x_ptr_down;
   }
-  /* They're always 16*5 bits apart!  */
-  /* And this makes sense conceptually: long is 32 bits, the two pointers are 16 bits each. The pointer to return execution to is 16 bits. But why is the top and bottom of the frame wrapped around main pointers? */
-  printf("Stack: up from depth:      %d, %p\n", depth, x_ptr_up);
-  if (depth > 0) {
-    subr(x, depth - 1);
+  /* Excepting the initial call, they're always 16*4 bits apart!  */
+  printf("Stack: up from depth:      %d, %p\n", curr_depth, x_ptr_up);
+  if (curr_depth < depth) {
+    subr(x, curr_depth + 1, depth);
   }
-  printf("Stack: down from main:     %d, %p\n", depth, x_ptr_down);
+  printf("Stack: down from main:     %d, %p\n", curr_depth, x_ptr_down);
 }
 
 /* Wait.. can I get a pointer to where main is in address space? */
@@ -51,14 +51,14 @@ int main(int argc, char **argv) {
     break;
   default:
     printf("Usage:\n\
-    %s [NUM]", argv[0]);
+    %s [NUM]\n", argv[0]);
     return 1;
   }
     
   int (*recurse)() = &main;
   /* Text refers to the code, and is static. Or is it? */
   printf("Text: main: %p\n", recurse);
-  subr((long) recurse, depth);
+  subr((long) recurse, 0, depth);
   return 0;
 }
 
