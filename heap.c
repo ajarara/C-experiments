@@ -3,16 +3,23 @@
 /* Suppose you've got a program that interacts with some_struct: */
 
 typedef struct {
-  int x;
-  int y;
+  long x;
+  long y;
 } some;
 
 /* what's so bad about keeping it on the stack? */
-some *make(int x, int y) { 
+some *make(long x, long y) { 
   some thing;
-  thing.x = 5;
-  thing.y = 6;
-  return &thing;
+  thing.x = x;
+  thing.y = y;
+  some *that = &thing;
+  return that;
+}
+
+void cleanse_stack(long junk) {
+  if (junk > 0) {
+    cleanse_stack(junk - 1);
+  };
 }
 
 
@@ -23,11 +30,14 @@ int main(void) {
   /* Aha! We get a seg fault. */
   /* printf("(Out of frame) Contents of thing->x: %d\n", thing->x); */
   /* Is it because we're attempting to access memory that is out of our stack? */
-  some *other;
-  other->x = 5;
-  other->y = 6;
   /* so this works... Which means that this is indeed the case. */
-  printf("(In frame) Contents of other->x: %d\n", other->x);
+  printf("Contents of thing->x: %d\n", thing->x);
+  printf("Contents of thing->y: %d\n", thing->y);
+
+  cleanse_stack(90);
+
+  printf("(Cleansed) Contents of thing->x: %d\n", thing->x);
+  printf("(Cleansed) Contents of thing->y: %d\n", thing->y);
 
   return 0;
 }
