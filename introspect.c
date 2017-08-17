@@ -3,7 +3,7 @@
 #include <stdlib.h>
 
 void subr(long contents, int curr_depth, int depth) {          
-  /* initialize some junk on the stack */
+  /* initialize some junk on the stack, we only care about the pointer.*/
   /* I'm not sure how to put this on one line */
   long x = 0;
   long *x_ptr = &x;

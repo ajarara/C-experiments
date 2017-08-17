@@ -30,3 +30,6 @@ Decrement a pointer, printing it out until the OS sends us sigsegv. This is a ba
 
 ## simple.c
 Does no IO or has any header files, simply here to illustrate base elements of an obj file for disassembly.
+
+## gcc.c
+Where's SIZEOF\_VOID\_P included?
