@@ -69,3 +69,16 @@ Does no IO or has any header files, simply here to illustrate base elements of a
 
 ## gcc.c
 Where's SIZEOF\_VOID\_P included?
+
+## bigbrother.c
+When two threads are running in the same address space, can they modify each other's stack space? They can.
+```
+$ gcc bigbrother.c -lpthread && ./a.out
+Starting child.
+Original value of mutate:       0
+New value of mutate:    1
+Success!
+Orig: 0, Val: 1
+```
+Why this functionality is allowed and my elegant 'everything should be stack allocated' mantra isn't I have no idea.
+
