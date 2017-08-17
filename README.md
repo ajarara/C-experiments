@@ -2,10 +2,46 @@
 
 These are stand alone files that demonstrate some concept I'm not sure about.
 
+These are all compiled and observed with GCC:
+```
+$ gcc -v
+Using built-in specs.
+COLLECT_GCC=gcc
+COLLECT_LTO_WRAPPER=/usr/libexec/gcc/x86_64-redhat-linux/6.3.1/lto-wrapper
+Target: x86_64-redhat-linux
+Configured with: ../configure --enable-bootstrap --enable-languages=c,c++,objc,obj-c++,fortran,ada,go,lto --prefix=/usr --mandir=/usr/share/man --infodir=/usr/share/info --with-bugurl=http://bugzilla.redhat.com/bugzilla --enable-shared --enable-threads=posix --enable-checking=release --enable-multilib --with-system-zlib --enable-__cxa_atexit --disable-libunwind-exceptions --enable-gnu-unique-object --enable-linker-build-id --with-linker-hash-style=gnu --enable-plugin --enable-initfini-array --disable-libgcj --with-isl --enable-libmpx --enable-gnu-indirect-function --with-tune=generic --with-arch_32=i686 --build=x86_64-redhat-linux
+Thread model: posix
+gcc version 6.3.1 20161221 (Red Hat 6.3.1-1) (GCC) 
+```
+
 ## heap.c
 How far can we go without using malloc? Can you allocate something on the stack in a subroutine, return the pointer to the caller, and still have access to it?
 
-In this case, it's a little surprising: You'll get a segfault, rather than UB or something. 
+If you return a reference to some statically allocated struct:
+``` C
+some *make(long x, long y) {
+    some thing;
+    thing.x = x;
+    thing.y = y;
+    return &thing;
+}
+```
+This will yield a warning, and at runtime any attempt to access the contents of the pointer afterwards results in a segfault.
+
+However...
+
+``` C
+some *make(long x, long y) {
+    some thing;
+    thing.x = x;
+    thing.y = y;
+    some *that = &thing
+    return &that;
+}
+```
+
+This will give you undefined behavior, with the warning silenced.
+
 
 ## introspect.c
 This file attempts to empirically answer the question of what stack structure looks like. Is there metadata mapping names to locations on the stack or are these resolved at compile time? This turns out to be a lot harder to verify.

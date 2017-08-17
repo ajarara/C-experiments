@@ -12,6 +12,7 @@ some *make(long x, long y) {
   some thing;
   thing.x = x;
   thing.y = y;
+  /* without this, our program segfaults. This program compiled with GCC will work, but it'll give you UB. */
   some *that = &thing;
   return that;
 }
